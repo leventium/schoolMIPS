@@ -103,7 +103,7 @@ module sm_control
     output reg       regDst, 
     output reg       regWrite, 
     output reg       aluSrc,
-    output reg [2:0] aluControl
+    output reg [3:0] aluControl
 );
     reg          branch;
     reg          condZero;
@@ -125,11 +125,15 @@ module sm_control
             { `C_SPEC,  `F_SRL  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SRL;  end
             { `C_SPEC,  `F_SLTU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SLTU; end
             { `C_SPEC,  `F_SUBU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SUBU; end
+            { `C_SPEC,  `F_SRLV } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SRLV; end
+            { `C_SPEC2, `F_MUL  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_MUL;  end
 
             { `C_ADDIU, `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_ADD;  end
             { `C_LUI,   `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_LUI;  end
+            { `C_SLTIU, `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_SLTU; end
 
             { `C_BEQ,   `F_ANY  } : begin branch = 1'b1; condZero = 1'b1; aluControl = `ALU_SUBU; end
+            { `C_BGEZ,  `F_ANY  } : begin branch = 1'b1; condZero = 1'b0; aluControl = `ALU_GEZ;  end
             { `C_BNE,   `F_ANY  } : begin branch = 1'b1; aluControl = `ALU_SUBU; end
         endcase
     end
@@ -140,7 +144,7 @@ module sm_alu
 (
     input  [31:0] srcA,
     input  [31:0] srcB,
-    input  [ 2:0] oper,
+    input  [ 3:0] oper,
     input  [ 4:0] shift,
     output        zero,
     output reg [31:0] result
@@ -154,10 +158,13 @@ module sm_alu
             `ALU_SRL  : result = srcB >> shift;
             `ALU_SLTU : result = (srcA < srcB) ? 1 : 0;
             `ALU_SUBU : result = srcA - srcB;
+            `ALU_GEZ  : result = (srcA >= 0) ? 1 : 0;
+            `ALU_MUL  : result = srcA * srcB;
+            `ALU_SRLV : result = srcB >> srcA;
         endcase
     end
 
-    assign zero   = (result == 0);
+    assign zero = (result == 0);
 endmodule
 
 module sm_register_file
