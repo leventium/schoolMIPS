@@ -25,7 +25,7 @@ module sm_cpu
     wire        regWrite;
     wire        aluSrc;
     wire        aluZero;
-    wire [ 2:0] aluControl;
+    wire [ 3:0] aluControl;
 
     //program counter
     wire [31:0] pc;
