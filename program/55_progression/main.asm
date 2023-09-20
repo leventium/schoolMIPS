@@ -8,6 +8,6 @@ start:     addiu $t1, $zero, 13
            mul $t5, $t4, $t3
            
            addiu $t6, $zero, 2
-           srlv $t7, $t5, $t6
+           srlv $v0, $t5, $t6
            
-loop:      beq $zero, $zero, loop
+end:       beq $zero, $zero, end
