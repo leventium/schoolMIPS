@@ -158,8 +158,8 @@ module sm_alu
             `ALU_SRL  : result = srcB >> shift;
             `ALU_SLTU : result = (srcA < srcB) ? 1 : 0;
             `ALU_SUBU : result = srcA - srcB;
-            `ALU_GEZ  : result = (srcA >= 0) ? 1 : 0;
-            `ALU_MUL  : result = srcA * srcB;
+            `ALU_GEZ  : result = ($signed(srcA) >= 0) ? 1 : 0;
+            `ALU_MUL  : result = $signed(srcA) * $signed(srcB);
             `ALU_SRLV : result = srcB >> srcA;
         endcase
     end
