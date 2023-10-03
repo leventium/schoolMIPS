@@ -1,0 +1,16 @@
+<mxfile host="app.diagrams.net" modified="2023-10-03T19:16:47.407Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0" etag="lH45t9kR-vOlID6w1jv2" version="22.0.2" type="device">
+  <diagram name="Страница — 1" id="cyrwyYdrvudYAbkS-2WD">
+    <mxGraphModel dx="989" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="_01IbUBz0nY6OmCriF5U-17" value="sm_cpu" style="shadow=0;dashed=0;align=center;html=1;strokeWidth=1;shape=mxgraph.electrical.logic_gates.dual_inline_ic;labelNames=clk,rst_n,regAddr,regData,imAddr,imData,dmAddr,dmWe,dmWData,dmRData;whiteSpace=wrap;pinSpacing=30;pinLabelType=cust;labelCount=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="265" width="170" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="_01IbUBz0nY6OmCriF5U-18" value="sm_matrix" style="shadow=0;dashed=0;align=center;html=1;strokeWidth=1;shape=mxgraph.electrical.logic_gates.dual_inline_ic;labelNames=clk,rst_n,bAddr,bWrite,bWData,bRData,gpioInput,gpioOutput,pwmOutput,alsCS,alsSCK,alsSDO;whiteSpace=wrap;pinSpacing=30;labelCount=12;pinLabelType=cust;" vertex="1" parent="1">
+          <mxGeometry x="660" y="265" width="200" height="190" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
