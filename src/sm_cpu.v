@@ -17,7 +17,12 @@ module sm_cpu
     input   [ 4:0]  regAddr,    // debug access reg address
     output  [31:0]  regData,    // debug access reg data
     output  [31:0]  imAddr,     // instruction memory address
-    input   [31:0]  imData      // instruction memory data
+    input   [31:0]  imData,      // instruction memory data
+
+    output  [31:0]  bAddr,
+    output          bWe,
+    input   [31:0]  bRData,
+    output  [31:0]  bWData
 );
     //control wires
     wire        pcSrc;
@@ -48,6 +53,11 @@ module sm_cpu
     wire [31:0] rd2;
     wire [31:0] wd3;
 
+    wire [31:0] aluResult;
+    wire        busToReg;
+    wire        busWrite;
+
+
     sm_register_file rf
     (
         .clk        ( clk          ),
@@ -69,6 +79,11 @@ module sm_cpu
     //alu
     wire [31:0] srcB = aluSrc ? signImm : rd2;
 
+    assign wd3 = busToReg ? bRData : aluResult;
+    assign bWe = busWrite;
+    assign bAddr = aluResult;
+    assign bWData = rd2;
+
     sm_alu alu
     (
         .srcA       ( rd1          ),
@@ -76,7 +91,7 @@ module sm_cpu
         .oper       ( aluControl   ),
         .shift      ( instr[10:6 ] ),
         .zero       ( aluZero      ),
-        .result     ( wd3          ) 
+        .result     ( aluResult    ) 
     );
 
     //control
@@ -89,7 +104,9 @@ module sm_cpu
         .regDst     ( regDst       ), 
         .regWrite   ( regWrite     ), 
         .aluSrc     ( aluSrc       ),
-        .aluControl ( aluControl   )
+        .aluControl ( aluControl   ),
+        .busWrite   ( busWtire     ),
+        .busToReg   ( busToReg     )
     );
 
 endmodule
@@ -103,7 +120,9 @@ module sm_control
     output reg       regDst, 
     output reg       regWrite, 
     output reg       aluSrc,
-    output reg [3:0] aluControl
+    output reg [3:0] aluControl,
+    output reg       busWrite,
+    output reg       busToReg
 );
     reg          branch;
     reg          condZero;
@@ -115,6 +134,8 @@ module sm_control
         regDst      = 1'b0;
         regWrite    = 1'b0;
         aluSrc      = 1'b0;
+        busWrite    = 1'b0;
+        busToReg    = 1'b0;
         aluControl  = `ALU_ADD;
 
         casez( {cmdOper,cmdFunk} )
@@ -135,6 +156,8 @@ module sm_control
             { `C_BEQ,   `F_ANY  } : begin branch = 1'b1; condZero = 1'b1; aluControl = `ALU_SUBU; end
             { `C_BGEZ,  `F_ANY  } : begin branch = 1'b1; condZero = 1'b0; aluControl = `ALU_GEZ;  end
             { `C_BNE,   `F_ANY  } : begin branch = 1'b1; aluControl = `ALU_SUBU; end
+            { `C_LW,    `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_ADD; busToReg = 1'b1; end
+            { `C_SW,    `F_ANY  } : begin busWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_ADD; end
         endcase
     end
 endmodule

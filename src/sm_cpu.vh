@@ -32,6 +32,8 @@
 `define C_BGEZ      6'b000001
 `define C_SLTIU     6'b001011
 `define C_SPEC2     6'b011100
+`define C_LW        6'b100011
+`define C_SW        6'b101011
 
 //instruction function field
 `define F_ADDU      6'b100001 // R-type, Integer Add Unsigned

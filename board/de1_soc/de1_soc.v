@@ -207,7 +207,10 @@ module de1_soc(
         .clkEnable  ( clkEnable ),
         .clk        ( clk       ),
         .regAddr    ( regAddr   ),
-        .regData    ( regData   )
+        .regData    ( regData   ),
+
+        .GpioInput  ( GPIO_0[15:0] ),
+        .GpioOutput ( GPIO_1[15:0] )
     );
 
     //outputs
