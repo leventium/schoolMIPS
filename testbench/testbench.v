@@ -2,6 +2,7 @@
 `timescale 1 ns / 100 ps
 
 `include "sm_cpu.vh"
+`include "sm_config.vh"
 
 `ifndef SIMULATION_CYCLES
     `define SIMULATION_CYCLES 120
@@ -18,17 +19,24 @@ module sm_testbench;
     wire [31:0] regData;
     wire        cpuClk;
 
+    reg [`GPIO_SIZE-1:0] gpio_inp;
+    wire [`GPIO_SIZE-1:0] gpio_outp;
+
+
     // ***** DUT start ************************
 
     sm_top sm_top
     (
-        .clkIn     ( clk     ),
-        .rst_n     ( rst_n   ),
-        .clkDevide ( 4'b0    ),
-        .clkEnable ( 1'b1    ),
-        .clk       ( cpuClk  ),
-        .regAddr   ( regAddr ),
-        .regData   ( regData )
+        .clkIn      ( clk       ),
+        .rst_n      ( rst_n     ),
+        .clkDevide  ( 4'b0      ),
+        .clkEnable  ( 1'b1      ),
+        .clk        ( cpuClk    ),
+        .regAddr    ( regAddr   ),
+        .regData    ( regData   ),
+
+        .GpioInput  ( gpio_inp  ),
+        .GpioOutput ( gpio_outp )
     );
 
     defparam sm_top.sm_clk_divider.bypass = 1;
@@ -48,6 +56,10 @@ module sm_testbench;
     initial begin
         clk = 0;
         forever clk = #(Tt/2) ~clk;
+    end
+
+    initial begin
+        gpio_inp = 16'h00a;
     end
 
     initial begin
@@ -105,6 +117,8 @@ module sm_testbench;
                 { `C_ADDIU, `F_ANY  } : $write ("addiu $%1d, $%1d, %1d", cmdRt, cmdRs, cmdImm);
                 { `C_LUI,   `F_ANY  } : $write ("lui   $%1d, %1d",       cmdRt, cmdImm);
                 { `C_SLTIU, `F_ANY  } : $write ("sltiu $%1d, $%1d, %1d", cmdRt, cmdRs, cmdImm);
+                { `C_LUI,   `F_ANY  } : $write ("lui   $%1d, %1d",       cmdRt, cmdImm);
+                { `C_LW,    `F_ANY  } : $write ("lw    $%1d, %1d($%1d)", cmdRt, cmdImm, cmdRs);
 
                 { `C_BEQ,   `F_ANY  } : $write ("beq   $%1d, $%1d, %1d", cmdRs, cmdRt, cmdImmS + 1);
                 { `C_BGEZ,  `F_ANY  } : $write ("bgez  $%1d, %1d",       cmdRs, cmdImmS + 1);
@@ -122,8 +136,8 @@ module sm_testbench;
 
     always @ (posedge clk)
     begin
-        $write ("%5d  pc = %2d  pcaddr = %h  instr = %h   v0 = %1d", 
-                  cycle, regData, (regData << 2), sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
+        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b instr = %h   v0 = %1d", 
+                  cycle, regData, (regData << 2), gpio_inp, gpio_outp, sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
 
         disasmInstr(sm_top.sm_cpu.instr);
 
