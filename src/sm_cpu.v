@@ -105,7 +105,7 @@ module sm_cpu
         .regWrite   ( regWrite     ), 
         .aluSrc     ( aluSrc       ),
         .aluControl ( aluControl   ),
-        .busWrite   ( busWtire     ),
+        .busWrite   ( busWrite     ),
         .busToReg   ( busToReg     )
     );
 
@@ -143,10 +143,12 @@ module sm_control
 
             { `C_SPEC,  `F_ADDU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_ADD;  end
             { `C_SPEC,  `F_OR   } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_OR;   end
+            { `C_SPEC,  `F_NOR  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_NOR;  end
             { `C_SPEC,  `F_SRL  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SRL;  end
             { `C_SPEC,  `F_SLTU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SLTU; end
             { `C_SPEC,  `F_SUBU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SUBU; end
             { `C_SPEC,  `F_SRLV } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SRLV; end
+            { `C_SPEC,  `F_SLLV } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SLLV; end
             { `C_SPEC2, `F_MUL  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_MUL;  end
 
             { `C_ADDIU, `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_ADD;  end
@@ -184,6 +186,8 @@ module sm_alu
             `ALU_GEZ  : result = ($signed(srcA) >= 0) ? 1 : 0;
             `ALU_MUL  : result = $signed(srcA) * $signed(srcB);
             `ALU_SRLV : result = srcB >> srcA;
+            `ALU_SLLV : result = srcB << srcA;
+            `ALU_NOR  : result = ~ (srcA | srcB);
         endcase
     end
 

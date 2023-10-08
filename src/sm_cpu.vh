@@ -18,6 +18,8 @@
 `define ALU_GEZ     4'b0110
 `define ALU_MUL     4'b0111
 `define ALU_SRLV    4'b1000
+`define ALU_SLLV    4'b1001
+`define ALU_NOR     4'b1010
 
 //instruction operation code
 `define C_SPEC      6'b000000 // Special instructions (depends on function field)
@@ -48,4 +50,6 @@
                               //         Rd = Rs – Rt
 `define F_MUL       6'b000010
 `define F_SRLV      6'b000110
+`define F_SLLV      6'b000100
+`define F_NOR       6'b100111
 `define F_ANY       6'b??????

@@ -59,7 +59,7 @@ module sm_testbench;
     end
 
     initial begin
-        gpio_inp = 16'h00a;
+        gpio_inp = 16'h052;
     end
 
     initial begin
@@ -112,7 +112,9 @@ module sm_testbench;
                 { `C_SPEC,  `F_SLTU } : $write ("sltu  $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_SUBU } : $write ("subu  $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_SRLV } : $write ("srlv  $%1d, $%1d, $%1d", cmdRd, cmdRt, cmdRs);
+                { `C_SPEC,  `F_SLLV } : $write ("sllv  $%1d, $%1d, $%1d", cmdRd, cmdRt, cmdRs);
                 { `C_SPEC2, `F_MUL  } : $write ("mul   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
+                { `C_SPEC,  `F_NOR  } : $write ("nor   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
 
                 { `C_ADDIU, `F_ANY  } : $write ("addiu $%1d, $%1d, %1d", cmdRt, cmdRs, cmdImm);
                 { `C_LUI,   `F_ANY  } : $write ("lui   $%1d, %1d",       cmdRt, cmdImm);
@@ -136,7 +138,7 @@ module sm_testbench;
 
     always @ (posedge clk)
     begin
-        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b instr = %h   v0 = %1d", 
+        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b instr = %h   v0 = %b", 
                   cycle, regData, (regData << 2), gpio_inp, gpio_outp, sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
 
         disasmInstr(sm_top.sm_cpu.instr);
