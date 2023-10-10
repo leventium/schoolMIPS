@@ -43,12 +43,12 @@ module sm_top
     wire [31:0] bWData;
     wire [31:0] bRData;
 
-    // wire [`GPIO_SIZE-1:0] shim_wire;
-    //
-    // sm_converter shim (
-    //     .data        ( shim_wire   ),
-    //     .gpio_output ( GpioOutput )
-    // );
+    wire [`GPIO_SIZE-1:0] shim_wire;
+
+    sm_converter shim (
+        .data        ( shim_wire  ),
+        .gpio_output ( GpioOutput )
+    );
 
     sm_matrix sm_matrix (
         .clk        ( clk        ),
@@ -57,7 +57,7 @@ module sm_top
         .bWData     ( bWData     ),
         .bRData     ( bRData     ),
         .GpioInput  ( GpioInput  ),
-        .GpioOutput ( GpioOutput )
+        .GpioOutput ( shim_wire  )
     );
 
     sm_cpu sm_cpu
@@ -149,10 +149,10 @@ module sm_converter (
 
     always @(*) begin
         casez (count[9:8])
-            2'b00: gpio_output = { 4'b0001, s_seg0, 1'b0 };
-            2'b01: gpio_output = { 4'b0010, s_seg1, 1'b0 };
-            2'b10: gpio_output = { 4'b0100, s_seg2, 1'b0 };
-            2'b11: gpio_output = { 4'b1000, s_seg3, 1'b0 };
+            2'b00: gpio_output = { 4'b0000, 4'b0001, s_seg0, 1'b0 };
+            2'b01: gpio_output = { 4'b0000, 4'b0010, s_seg1, 1'b0 };
+            2'b10: gpio_output = { 4'b0000, 4'b0100, s_seg2, 1'b0 };
+            2'b11: gpio_output = { 4'b0000, 4'b1000, s_seg3, 1'b0 };
             default: count <= count + 1'b0;
         endcase
         count <= count + 1'b1;
