@@ -2,10 +2,10 @@
 
 module sm_matrix (
     input                       clk,
-    input      [31:0]           bAddr,
-    input                       bWe,
-    input      [31:0]           bWData,
-    output     [31:0]           bRData,
+    input      [31:0]           bAddr, userAddr,
+    input                       bWe, userWe,
+    input      [31:0]           bWData, userWData,
+    output     [31:0]           bRData, userRData,
 
     input      [`GPIO_SIZE-1:0] GpioInput,
     output     [`GPIO_SIZE-1:0] GpioOutput
@@ -15,11 +15,15 @@ module sm_matrix (
     wire [31:0] bOut1;
 
     sm_ram sm_ram (
-        .clk ( clk    ),
-        .a   ( bAddr  ),
-        .we  ( bWe    ),
-        .wd  ( bWData ),
-        .rd  ( bOut0  )
+        .clk   ( clk        ),
+        .a     ( bAddr      ),
+        .b     ( userAddr   ),
+        .we_a  ( bWe        ),
+        .we_b  ( userWe     ),
+        .wd_a  ( bWData     ),
+        .wd_b  ( userWData  ),
+        .rd_a  ( bOut0      ),
+        .rd_b  ( userRData  )
     );
 
     sm_gpio sm_gpio (

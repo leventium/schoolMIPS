@@ -9,6 +9,10 @@ module sm_top
     output                   clk,
     input   [ 4:0 ]          regAddr,
     output  [31:0 ]          regData,
+    input   [31:0 ]          userAddr,
+    input                    userWe,
+    input   [31:0 ]          userWData,
+    output  [31:0 ]          userRData,
 
     input   [`GPIO_SIZE-1:0] GpioInput,
     output  [`GPIO_SIZE-1:0] GpioOutput
@@ -53,9 +57,13 @@ module sm_top
     sm_matrix sm_matrix (
         .clk        ( clk        ),
         .bAddr      ( bAddr      ),
+        .userAddr   ( userAddr   ),
         .bWe        ( bWe        ),
+        .userWe     ( userWe     ),
         .bWData     ( bWData     ),
+        .userWData  ( userWData  ),
         .bRData     ( bRData     ),
+        .userRData  ( userRData  ),
         .GpioInput  ( GpioInput  ),
         .GpioOutput ( shim_wire  )
     );
