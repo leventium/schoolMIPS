@@ -22,6 +22,9 @@ module sm_testbench;
     reg [`GPIO_SIZE-1:0] gpio_inp;
     wire [`GPIO_SIZE-1:0] gpio_outp;
 
+    reg  [31:0] ram_addr, ram_wdata;
+    reg         ram_we;
+    wire [31:0] ram_rdata;
 
     // ***** DUT start ************************
 
@@ -34,6 +37,10 @@ module sm_testbench;
         .clk        ( cpuClk    ),
         .regAddr    ( regAddr   ),
         .regData    ( regData   ),
+        .userAddr   ( ram_addr  ),
+        .userWe     ( ram_we    ),
+        .userWData  ( ram_wdata ),
+        .userRData  ( ram_rdata ),
 
         .GpioInput  ( gpio_inp  ),
         .GpioOutput ( gpio_outp )
@@ -56,6 +63,12 @@ module sm_testbench;
     initial begin
         clk = 0;
         forever clk = #(Tt/2) ~clk;
+    end
+
+    initial begin
+        ram_addr  = 32'h00000004;
+        ram_we    = 1'b1;
+        ram_wdata = 32'h00110011;
     end
 
     initial begin
@@ -138,8 +151,8 @@ module sm_testbench;
 
     always @ (posedge clk)
     begin
-        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b instr = %h   v0 = %b", 
-                  cycle, regData, (regData << 2), gpio_inp, gpio_outp, sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
+        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b ram[4] = %b instr = %h   v0 = %b", 
+                  cycle, regData, (regData << 2), gpio_inp, gpio_outp, ram_rdata, sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
 
         disasmInstr(sm_top.sm_cpu.instr);
 

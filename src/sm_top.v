@@ -47,12 +47,12 @@ module sm_top
     wire [31:0] bWData;
     wire [31:0] bRData;
 
-    wire [`GPIO_SIZE-1:0] shim_wire;
-
-    sm_converter shim (
-        .data        ( shim_wire  ),
-        .gpio_output ( GpioOutput )
-    );
+    // wire [`GPIO_SIZE-1:0] shim_wire;
+    //
+    // sm_converter shim (
+    //     .data        ( shim_wire  ),
+    //     .gpio_output ( GpioOutput )
+    // );
 
     sm_matrix sm_matrix (
         .clk        ( clk        ),
@@ -65,7 +65,7 @@ module sm_top
         .bRData     ( bRData     ),
         .userRData  ( userRData  ),
         .GpioInput  ( GpioInput  ),
-        .GpioOutput ( shim_wire  )
+        .GpioOutput ( GpioOutput )
     );
 
     sm_cpu sm_cpu
