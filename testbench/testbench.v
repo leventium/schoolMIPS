@@ -151,8 +151,8 @@ module sm_testbench;
 
     always @ (posedge clk)
     begin
-        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b ram[4] = %b instr = %h   v0 = %b", 
-                  cycle, regData, (regData << 2), gpio_inp, gpio_outp, ram_rdata, sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
+        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b ram[4] = %h ram[8] = %h instr = %h   v0 = %h", 
+                  cycle, regData, (regData << 2), gpio_inp, gpio_outp, ram_rdata, sm_top.sm_matrix.sm_ram.ram[2], sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
 
         disasmInstr(sm_top.sm_cpu.instr);
 

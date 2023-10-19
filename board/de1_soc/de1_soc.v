@@ -206,8 +206,8 @@ module de1_soc(
         .clkDevide  ( clkDevide ),
         .clkEnable  ( clkEnable ),
         .clk        ( clk       ),
-        .regAddr    ( regAddr   ),
-        .regData    ( regData   ),
+        .userAddr   ( regAddr   ),
+        .userRData  ( regData   ),
 
         .GpioInput  ( GPIO_0[15:0] ),
         .GpioOutput ( GPIO_1[15:0] )
