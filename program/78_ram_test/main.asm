@@ -1,8 +1,8 @@
         .text
-start:  li $v0, 10
-        sw $v0, 0x00000008
-        lw $t0, 0x00000008
-        sw $t0, 0x0000beb0
-        lw $t0, 0x0000beb4
-        sw $t0, 0x0000beb0
+start:  li $v1, 10
+        sw $v1, 0x00000008
+        lw $v0, 0x00000008
+        sw $v0, 0x1001beb0
+        lw $v0, 0x1001beb4
+        sw $v0, 0x1001beb0
 end:    beqz $zero, end
