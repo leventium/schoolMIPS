@@ -20,6 +20,9 @@
 `define ALU_SRLV    4'b1000
 `define ALU_SLLV    4'b1001
 `define ALU_NOR     4'b1010
+`define ALU_SLT     4'b1011
+`define ALU_AND     4'b1100
+
 
 //instruction operation code
 `define C_SPEC      6'b000000 // Special instructions (depends on function field)
@@ -36,6 +39,9 @@
 `define C_SPEC2     6'b011100
 `define C_LW        6'b100011
 `define C_SW        6'b101011
+`define C_ORI       6'b001101
+`define C_ADDI      6'b001000
+
 
 //instruction function field
 `define F_ADDU      6'b100001 // R-type, Integer Add Unsigned
@@ -48,8 +54,11 @@
                               //         Rd = (Rs∅ < Rt∅) ? 1 : 0
 `define F_SUBU      6'b100011 // R-type, Unsigned Subtract
                               //         Rd = Rs – Rt
+`define F_ADD       6'b100000
+`define F_AND       6'b100100
 `define F_MUL       6'b000010
 `define F_SRLV      6'b000110
 `define F_SLLV      6'b000100
 `define F_NOR       6'b100111
+`define F_SLT       6'b101010
 `define F_ANY       6'b??????

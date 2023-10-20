@@ -5,7 +5,7 @@
 `include "sm_config.vh"
 
 `ifndef SIMULATION_CYCLES
-    `define SIMULATION_CYCLES 120
+    `define SIMULATION_CYCLES 1000
 `endif
 
 module sm_testbench;
@@ -37,10 +37,10 @@ module sm_testbench;
         .clk        ( cpuClk    ),
         .regAddr    ( regAddr   ),
         .regData    ( regData   ),
-        .userAddr   ( ram_addr  ),
-        .userWe     ( ram_we    ),
-        .userWData  ( ram_wdata ),
-        .userRData  ( ram_rdata ),
+        // .userAddr   ( ram_addr  ),
+        // .userWe     ( ram_we    ),
+        // .userWData  ( ram_wdata ),
+        // .userRData  ( ram_rdata ),
 
         .GpioInput  ( gpio_inp  ),
         .GpioOutput ( gpio_outp )
@@ -120,9 +120,12 @@ module sm_testbench;
                                             $write ("new/unknown");
 
                 { `C_SPEC,  `F_ADDU } : $write ("addu  $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
+                { `C_SPEC,  `F_ADD  } : $write ("add   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_OR   } : $write ("or    $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
+                { `C_SPEC,  `F_AND  } : $write ("and   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_SRL  } : $write ("srl   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_SLTU } : $write ("sltu  $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
+                { `C_SPEC,  `F_SLT  } : $write ("slt   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_SUBU } : $write ("subu  $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
                 { `C_SPEC,  `F_SRLV } : $write ("srlv  $%1d, $%1d, $%1d", cmdRd, cmdRt, cmdRs);
                 { `C_SPEC,  `F_SLLV } : $write ("sllv  $%1d, $%1d, $%1d", cmdRd, cmdRt, cmdRs);
@@ -130,7 +133,9 @@ module sm_testbench;
                 { `C_SPEC,  `F_NOR  } : $write ("nor   $%1d, $%1d, $%1d", cmdRd, cmdRs, cmdRt);
 
                 { `C_ADDIU, `F_ANY  } : $write ("addiu $%1d, $%1d, %1d", cmdRt, cmdRs, cmdImm);
+                { `C_ADDI,  `F_ANY  } : $write ("addi  $%1d, $%1d, %1d", cmdRt, cmdRs, cmdImm);
                 { `C_LUI,   `F_ANY  } : $write ("lui   $%1d, %1d",       cmdRt, cmdImm);
+                { `C_ORI,   `F_ANY  } : $write ("ori   $%1d, %1d",       cmdRt, cmdImm);
                 { `C_SLTIU, `F_ANY  } : $write ("sltiu $%1d, $%1d, %1d", cmdRt, cmdRs, cmdImm);
                 { `C_LW,    `F_ANY  } : $write ("lw    $%1d, %1d($%1d)", cmdRt, cmdImm, cmdRs);
                 { `C_SW,    `F_ANY  } : $write ("sw    $%1d, %1d($%1d)", cmdRt, cmdImm, cmdRs);
@@ -151,12 +156,17 @@ module sm_testbench;
 
     always @ (posedge clk)
     begin
-        $write ("%5d  pc = %2d  pcaddr = %h gi = %b go = %b ram[4] = %h ram[8] = %h instr = %h   v0 = %h", 
-                  cycle, regData, (regData << 2), gpio_inp, gpio_outp, ram_rdata, sm_top.sm_matrix.sm_ram.ram[2], sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[2]);
+        $write ("%5d  pc = %2d  pcaddr = %h instr = %h  t0 = %h  t1 = %h  t2 = %h", 
+                  cycle, regData, (regData << 2), sm_top.sm_cpu.instr, sm_top.sm_cpu.rf.rf[8], sm_top.sm_cpu.rf.rf[9], sm_top.sm_cpu.rf.rf[10]);
 
         disasmInstr(sm_top.sm_cpu.instr);
 
         $write("\n");
+
+        for (i = 0; i < 16; i = i + 1) begin
+            $write ("%h ", sm_top.sm_matrix.sm_ram.ram[i]);
+        end
+        $write ("\n\n");
 
         cycle = cycle + 1;
 

@@ -142,17 +142,22 @@ module sm_control
             default               : ;
 
             { `C_SPEC,  `F_ADDU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_ADD;  end
+            { `C_SPEC,  `F_ADD  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_ADD;  end
             { `C_SPEC,  `F_OR   } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_OR;   end
+            { `C_SPEC,  `F_AND  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_AND;   end
             { `C_SPEC,  `F_NOR  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_NOR;  end
             { `C_SPEC,  `F_SRL  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SRL;  end
             { `C_SPEC,  `F_SLTU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SLTU; end
+            { `C_SPEC,  `F_SLT  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SLT;  end
             { `C_SPEC,  `F_SUBU } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SUBU; end
             { `C_SPEC,  `F_SRLV } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SRLV; end
             { `C_SPEC,  `F_SLLV } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_SLLV; end
             { `C_SPEC2, `F_MUL  } : begin regDst = 1'b1; regWrite = 1'b1; aluControl = `ALU_MUL;  end
 
             { `C_ADDIU, `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_ADD;  end
+            { `C_ADDI,  `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_ADD;  end
             { `C_LUI,   `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_LUI;  end
+            { `C_ORI,   `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_OR;   end
             { `C_SLTIU, `F_ANY  } : begin regWrite = 1'b1; aluSrc = 1'b1; aluControl = `ALU_SLTU; end
 
             { `C_BEQ,   `F_ANY  } : begin branch = 1'b1; condZero = 1'b1; aluControl = `ALU_SUBU; end
@@ -177,8 +182,9 @@ module sm_alu
     always @ (*) begin
         case (oper)
             default   : result = srcA + srcB;
-            `ALU_ADD  : result = srcA + srcB;
+            `ALU_ADD  : result = $signed(srcA) + $signed(srcB);
             `ALU_OR   : result = srcA | srcB;
+            `ALU_AND  : result = srcA & srcB;
             `ALU_LUI  : result = (srcB << 16);
             `ALU_SRL  : result = srcB >> shift;
             `ALU_SLTU : result = (srcA < srcB) ? 1 : 0;
@@ -188,6 +194,7 @@ module sm_alu
             `ALU_SRLV : result = srcB >> srcA;
             `ALU_SLLV : result = srcB << srcA;
             `ALU_NOR  : result = ~ (srcA | srcB);
+            `ALU_SLT  : result = ($signed(srcA) < $signed(srcB)) ? 1 : 0;
         endcase
     end
 
