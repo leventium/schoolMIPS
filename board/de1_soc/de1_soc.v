@@ -195,7 +195,7 @@ module de1_soc(
     wire          rst_n     =  KEY[0];
     wire          clkEnable =  SW [9] | ~KEY[1];
     wire [  3:0 ] clkDevide =  SW [8:5];
-    wire [  4:0 ] regAddr   =  SW [4:0];
+    wire [  6:0 ] regAddr   =  { SW [4:0], 2'b00 };
     wire [ 31:0 ] regData;
 
     //cores
