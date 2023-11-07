@@ -13,4 +13,7 @@ test.html
 test.html.imgtec_forum
 .vscode/
 
+**/a.out
+**/dump.vcd
+
 doc/src/archive/
